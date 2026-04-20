@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamAI v5.5 | Research Architect</title>
+    <title>GamAI v5.6 | Research Architect</title>
     <style>
         :root { --primary: #004a99; --accent: #fdb813; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; color: #333; }
@@ -28,7 +28,7 @@
 <div class="container">
     <div class="header">
         <h1>GamAI Research Architect</h1>
-        <p>Official 2026 Standard for STEM & Social Science Design</p>
+        <p>STEM & Social Science Research Design Engine</p>
     </div>
 
     <div class="content">
@@ -47,19 +47,19 @@
         <div class="grid">
             <div class="input-box">
                 <label>Independent Variable (IV)</label>
-                <input type="text" id="iv" placeholder="e.g., pH Concentration">
+                <input type="text" id="iv" placeholder="e.g., Use of Interactive Simulations">
             </div>
             <div class="input-box">
                 <label>Dependent Variable (DV)</label>
-                <input type="text" id="dv" placeholder="e.g., Seed Germination Rate">
+                <input type="text" id="dv" placeholder="e.g., Scientific Literacy">
             </div>
             <div class="input-box">
                 <label>IV Sub-variables (Indicators)</label>
-                <input type="text" id="ivSub" placeholder="e.g., Level 1, Level 2 (or N/A)">
+                <input type="text" id="ivSub" placeholder="Indicator A, Indicator B (or N/A)">
             </div>
             <div class="input-box">
                 <label>DV Sub-variables (Indicators)</label>
-                <input type="text" id="dvSub" placeholder="e.g., Root length, Stem height (or N/A)">
+                <input type="text" id="dvSub" placeholder="Indicator X, Indicator Y (or N/A)">
             </div>
         </div>
 
@@ -67,12 +67,12 @@
             <div class="section-title">III. STEM Trial Specifications</div>
             <div class="input-box full">
                 <label>Proposed Experimental Procedures</label>
-                <textarea id="stemTrials" placeholder="Describe your tests, trials, and replicates..."></textarea>
+                <textarea id="stemTrials" placeholder="Describe tests, trials, and replicates..."></textarea>
             </div>
         </div>
 
         <button onclick="generateResearch()">Architect My Research</button>
-        <div id="loading" class="loading">📡 Connecting to Gemini 3.1 Engine...</div>
+        <div id="loading" class="loading">⚡ Processing Variables via Stable Lane...</div>
 
         <div id="output-area">
             <div id="ai-response"></div>
@@ -87,10 +87,9 @@ function toggleSTEM() {
 }
 
 async function generateResearch() {
-    // SECURE KEY HANDLING
     let apiKey = localStorage.getItem("gamai_key");
     if (!apiKey) {
-        apiKey = prompt("Please enter your Gemini API Key (stored locally for safety):");
+        apiKey = prompt("Please enter your Gemini API Key:");
         if (apiKey) localStorage.setItem("gamai_key", apiKey);
         else return;
     }
@@ -108,19 +107,18 @@ async function generateResearch() {
     document.getElementById('output-area').style.display = "none";
 
     const promptText = `Act as an Academic Expert. Research Type: ${type}. IV: ${iv} (${ivSub}), DV: ${dv} (${dvSub}). STEM Context: ${stemTrials}. 
-    Output these sections:
+    Please generate:
     1. 3 PROFESSIONAL TITLES.
-    2. THEORETICAL FRAMEWORK: Specific supporting theories/laws.
-    3. CONCEPTUAL FRAMEWORK: IPO/Logic explanation.
-    4. STATEMENT OF THE PROBLEM: One formal General Statement paragraph, followed by Specific Numbered Questions.
-    5. EVALUATIONS (For STEM): Technical tests/procedures.
+    2. THEORETICAL FRAMEWORK (Supporting theories).
+    3. CONCEPTUAL FRAMEWORK (Explain IPO/Study Logic).
+    4. STATEMENT OF THE PROBLEM: Formal General Statement paragraph, followed by Specific Numbered Questions.
+    5. EVALUATIONS (For STEM): Technical trials.
     6. STATISTICAL TOOLS: Map a test to EVERY numbered question.
-    Format: Use <h3> for headers and <strong> for highlights.`;
+    Format with <h3> for headers and <strong> for highlights.`;
 
     try {
-        // APRIL 2026 STABLE CONFIGURATION:
-        // Use v1beta for Gemini 3.1 models
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`;
+        // SWITCHED TO STABLE gemini-1.5-flash TO AVOID HIGH DEMAND ERRORS
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
         
         const response = await fetch(url, {
             method: "POST",
@@ -131,8 +129,8 @@ async function generateResearch() {
         const data = await response.json();
         
         if(data.error) {
-            if(data.error.code === 403 || data.error.message.includes("API key")) {
-                localStorage.removeItem("gamai_key"); // Reset bad key
+            if(data.error.code === 429 || data.error.status === "UNAVAILABLE") {
+                throw new Error("The stable model is also busy. Please wait 10 seconds and try again.");
             }
             throw new Error(data.error.message);
         }
@@ -144,7 +142,7 @@ async function generateResearch() {
             .replace(/### (.*?)\n/g, "<h3>$1</h3>");
             
     } catch (err) {
-        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Architectural Failure:</b> " + err.message + "<br><br><b>How to fix:</b> Ensure you are using a NEW API key from AI Studio created after April 1, 2026.";
+        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Architectural Error:</b> " + err.message;
     } finally {
         document.getElementById('loading').style.display = "none";
         document.getElementById('output-area').style.display = "block";
