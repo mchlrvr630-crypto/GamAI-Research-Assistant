@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamAI v7.0 | Research Architect</title>
+    <title>GamAI v8.0 | 2026 Research Architect</title>
     <style>
         :root { --primary: #004a99; --accent: #fdb813; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; color: #333; }
@@ -21,7 +21,6 @@
         button:hover { background: #003366; }
         #output-area { margin-top: 40px; padding: 35px; background: #fffdf2; border: 1px solid var(--accent); border-radius: 10px; display: none; line-height: 1.8; }
         .loading { text-align: center; display: none; padding: 20px; font-weight: bold; color: var(--primary); }
-        .retry-btn { background: #dc3545; margin-top: 10px; display: none; }
     </style>
 </head>
 <body>
@@ -29,7 +28,7 @@
 <div class="container">
     <div class="header">
         <h1>GamAI Research Architect</h1>
-        <p>Optimized for Gemini 3.1 Lite Engine (Stable 2026)</p>
+        <p>Standardized for Gemini 3.1 Series (Updated April 2026)</p>
     </div>
 
     <div class="content">
@@ -66,13 +65,11 @@
 
         <div id="stemFields" class="hidden">
             <div class="section-title">III. STEM Trial Specifications</div>
-            <textarea id="stemTrials" style="width:96.5%" placeholder="Describe your trials..."></textarea>
+            <textarea id="stemTrials" style="width:96%" placeholder="Describe your trials..."></textarea>
         </div>
 
-        <button id="mainBtn" onclick="generateResearch()">Architect My Research</button>
-        <button id="retryBtn" class="retry-btn" onclick="generateResearch()">Server Busy - Click to Retry</button>
-        
-        <div id="loading" class="loading">🛰️ Accessing Lite Lane (Priority Queue)...</div>
+        <button onclick="generateResearch()">Architect My Research</button>
+        <div id="loading" class="loading">⚡ Initializing Gemini 3.1 Lite Lane...</div>
 
         <div id="output-area">
             <div id="ai-response"></div>
@@ -89,26 +86,25 @@ function toggleSTEM() {
 async function generateResearch() {
     let apiKey = localStorage.getItem("gamai_key");
     if (!apiKey) {
-        apiKey = prompt("Enter your Gemini API Key:");
+        apiKey = prompt("Please enter your Gemini API Key:");
         if (apiKey) localStorage.setItem("gamai_key", apiKey);
         else return;
     }
 
-    // UI Reset
     document.getElementById('loading').style.display = "block";
     document.getElementById('output-area').style.display = "none";
-    document.getElementById('retryBtn').style.display = "none";
 
     const promptText = `Act as an Academic Expert. Research Type: ${document.getElementById('researchType').value}. 
     IV: ${document.getElementById('iv').value} (${document.getElementById('ivSub').value}), 
     DV: ${document.getElementById('dv').value} (${document.getElementById('dvSub').value}). 
-    STEM: ${document.getElementById('stemTrials').value}.
-    Generate: 1. 3 Titles. 2. Theoretical Framework. 3. Conceptual Framework. 4. SOP (General + Numbered Questions). 5. STEM Trials. 6. Stats Tools.
-    Format: Use <h3> and <strong>.`;
+    STEM Context: ${document.getElementById('stemTrials').value}.
+    Generate: 1. 3 Titles. 2. Theoretical Framework. 3. Conceptual Framework. 4. SOP (General + Specific Numbered Questions). 5. STEM Trials. 6. Statistical Tools for each question.
+    Format with <h3> and <strong>.`;
 
     try {
-        // USE THE HIGH-VOLUME LITE MODEL FOR 2026
-        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`;
+        // APRIL 2026 STABLE MODEL ID
+        const model = "gemini-3.1-flash-lite-preview";
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
         
         const response = await fetch(url, {
             method: "POST",
@@ -119,22 +115,26 @@ async function generateResearch() {
         const data = await response.json();
         
         if(data.error) {
-            if(data.error.code === 429 || data.error.message.includes("demand")) {
-                throw new Error("High Demand: The server is crowded.");
+            // Check for 404 (wrong model) or 403 (leaked key)
+            if(data.error.code === 404) throw new Error("Model ID Error. This region may require Gemini 3.1 Pro.");
+            if(data.error.code === 403) {
+                localStorage.removeItem("gamai_key");
+                throw new Error("API Key Blocked. Please create a NEW key in AI Studio.");
             }
             throw new Error(data.error.message);
         }
 
-        document.getElementById('ai-response').innerHTML = data.candidates[0].content.parts[0].text
-            .replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>").replace(/### (.*?)\n/g, "<h3>$1</h3>");
-        document.getElementById('output-area').style.display = "block";
+        const textResult = data.candidates[0].content.parts[0].text;
+        document.getElementById('ai-response').innerHTML = textResult
+            .replace(/\n/g, "<br>")
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+            .replace(/### (.*?)\n/g, "<h3>$1</h3>");
             
     } catch (err) {
-        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>System:</b> " + err.message;
-        document.getElementById('output-area').style.display = "block";
-        if(err.message.includes("Demand")) document.getElementById('retryBtn').style.display = "block";
+        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Architectural Error:</b> " + err.message;
     } finally {
         document.getElementById('loading').style.display = "none";
+        document.getElementById('output-area').style.display = "block";
     }
 }
 </script>
