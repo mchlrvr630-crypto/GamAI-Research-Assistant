@@ -2,96 +2,115 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GamAI v2.0 | Research Architect</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GamAI | Research Architect v2.0</title>
     <style>
-        :root { --primary: #1a237e; --accent: #ffd600; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f9; padding: 20px; }
-        .app-card { max-width: 800px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; }
-        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
-        .content { padding: 30px; }
-        .input-group { margin-bottom: 20px; }
-        label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
-        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
-        button:hover { background: #0d1642; border: 1px solid var(--accent); }
-        #output { margin-top: 30px; padding: 20px; border-left: 5px solid var(--accent); background: #fffde7; display: none; line-height: 1.6; }
-        .tool-tag { background: #e8eaf6; padding: 2px 8px; border-radius: 4px; font-weight: bold; color: var(--primary); }
+        :root { --primary: #004a99; --accent: #fdb813; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg); margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 850px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); overflow: hidden; border-top: 8px solid var(--primary); }
+        .header { background: #fff; padding: 30px; text-align: center; border-bottom: 1px solid #eee; }
+        .header h1 { margin: 0; color: var(--primary); font-size: 2rem; letter-spacing: -1px; }
+        .header p { margin: 5px 0 0; color: #666; font-style: italic; }
+        .content { padding: 40px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 25px; margin-bottom: 30px; }
+        .input-box { display: flex; flex-direction: column; }
+        label { font-weight: bold; margin-bottom: 8px; font-size: 0.9rem; color: var(--primary); }
+        input[type="text"] { padding: 12px; border: 2px solid #e1e1e1; border-radius: 8px; font-size: 1rem; transition: 0.3s; }
+        input[type="text"]:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 8px rgba(0,74,153,0.1); }
+        button { grid-column: span 2; padding: 18px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #003366; transform: translateY(-2px); }
+        #output-area { margin-top: 40px; padding: 25px; background: #fffdf2; border: 1px solid var(--accent); border-radius: 10px; display: none; animation: fadeIn 0.5s ease-in; }
+        .result-content { line-height: 1.8; font-size: 1.05rem; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .loading { text-align: center; color: var(--primary); font-weight: bold; display: none; }
     </style>
 </head>
 <body>
 
-<div class="app-card">
+<div class="container">
     <div class="header">
-        <h1>GamAI: Research Architect</h1>
-        <p>Conceptualize your study in seconds</p>
+        <h1>GamAI Research Architect</h1>
+        <p>Expert Research Design & Statistical Tool Suggestion</p>
     </div>
-    
+
     <div class="content">
-        <div class="input-group">
-            <label>Independent Variable (IV) - The Cause</label>
-            <input type="text" id="iv" placeholder="e.g., Use of Gamified Apps">
+        <div class="grid">
+            <div class="input-box">
+                <label>Independent Variable (IV)</label>
+                <input type="text" id="iv" placeholder="e.g., Modular Distance Learning">
+            </div>
+            <div class="input-box">
+                <label>Dependent Variable (DV)</label>
+                <input type="text" id="dv" placeholder="e.g., Reading Comprehension Level">
+            </div>
         </div>
 
-        <div class="input-group">
-            <label>Dependent Variable (DV) - The Effect</label>
-            <input type="text" id="dv" placeholder="e.g., Academic Performance in Math">
-        </div>
+        <button id="mainBtn" onclick="runArchitect()">Architect My Research</button>
 
-        <button onclick="generateResearch()">Architect My Research</button>
+        <div id="loading" class="loading">🔍 Analyzing variables and designing study...</div>
 
-        <div id="output">
-            <div id="ai-response"></div>
+        <div id="output-area">
+            <div class="result-content" id="ai-response"></div>
         </div>
     </div>
 </div>
 
 <script>
-async function generateResearch() {
+async function runArchitect() {
     const iv = document.getElementById('iv').value;
     const dv = document.getElementById('dv').value;
-    const outputDiv = document.getElementById('output');
-    const responseText = document.getElementById('ai-response');
-    
-    // 1. ENSURE YOUR KEY IS HERE (Keep the quotation marks!)
+    const outArea = document.getElementById('output-area');
+    const respDiv = document.getElementById('ai-response');
+    const loading = document.getElementById('loading');
+
+    // --- PASTE YOUR API KEY BELOW ---
     const apiKey = "AIzaSyA0qQtrAFgfLtkcxIbcdyftzDpnFsCs_Jk"; 
 
-    if(!iv || !dv) { alert("Please fill in both IV and DV"); return; }
+    if(!iv || !dv) { alert("Please input both variables."); return; }
 
-    outputDiv.style.display = "block";
-    responseText.innerHTML = "<em>GamAI is brainstorming your research design...</em>";
+    loading.style.display = "block";
+    outArea.style.display = "none";
 
-    const prompt = `Act as a Senior Research Consultant. 
+    const prompt = `Act as a Professional Research Consultant.
+    The researcher has these variables:
     Independent Variable (IV): ${iv}
     Dependent Variable (DV): ${dv}
-    Task: Suggest 3 professional research titles, a specific Research Question, the best Research Design, and the exact Statistical Tool to use. 
-    Format: Use bold headers and clear bullet points.`;
+
+    Provide the following structured output:
+    1. SUGGESTED TITLES: (Provide 3 distinct, professional research titles).
+    2. RESEARCH QUESTION: Formulate the primary Statement of the Problem.
+    3. RESEARCH DESIGN: Recommend the best quantitative design (e.g. Quasi-experimental, Correlational, etc.) and explain why.
+    4. STATISTICAL TOOL: Suggest the most appropriate statistical test (e.g. T-test, ANOVA, Pearson's r) to analyze the relationship between these variables.`;
 
     try {
-        // 2. UPDATED STABLE URL FOR APRIL 2026 (gemini-2.5-flash)
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        // UPDATED URL FOR APRIL 2026 STABLE MODEL
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.1-flash-lite-preview:generateContent?key=${apiKey}`;
+        
+        const response = await fetch(url, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
-        
-        const data = await response.json();
-        
-        // 3. ERROR HANDLING FOR THE API
-        if (data.error) {
-            responseText.innerHTML = "<span style='color:red;'>API Error: " + data.error.message + "</span>";
-            return;
-        }
 
-        const result = data.candidates[0].content.parts[0].text;
-        
-        // Convert Markdown to readable HTML
-        responseText.innerHTML = result.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-        
-    } catch (error) {
-        responseText.innerHTML = "<span style='color:red;'>Connection Error. Please check your internet or API Key.</span>";
+        const data = await response.json();
+
+        if (data.error) {
+            respDiv.innerHTML = "<b style='color:red;'>System Error:</b> " + data.error.message;
+        } else {
+            const textResult = data.candidates[0].content.parts[0].text;
+            // Formatting the AI text to look clean
+            respDiv.innerHTML = textResult
+                .replace(/\n/g, "<br>")
+                .replace(/\*\*(.*?)\*\*/g, "<strong style='color:#004a99; font-size:1.2rem;'>$1</strong>")
+                .replace(/\* /g, "• ");
+        }
+    } catch (err) {
+        respDiv.innerHTML = "<b style='color:red;'>Connection Failed.</b> Please check your internet or API key.";
+    } finally {
+        loading.style.display = "none";
+        outArea.style.display = "block";
     }
 }
-  
 </script>
 
 </body>
