@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamAI v3.0 | Advanced Research Architect</title>
+    <title>GamAI v4.0 | Ultimate Research Architect</title>
     <style>
         :root { --primary: #004a99; --accent: #fdb813; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; color: #333; }
-        .container { max-width: 900px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid var(--primary); }
+        .container { max-width: 1000px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid var(--primary); }
         .header { padding: 30px; text-align: center; border-bottom: 1px solid #eee; background: white; }
+        .header h1 { margin: 0; color: var(--primary); font-size: 2.2rem; }
         .content { padding: 40px; }
-        .section-title { font-weight: bold; color: var(--primary); border-bottom: 2px solid var(--accent); display: inline-block; margin-bottom: 20px; text-transform: uppercase; }
+        .section-title { font-weight: bold; color: var(--primary); border-bottom: 2px solid var(--accent); display: inline-block; margin-bottom: 20px; text-transform: uppercase; margin-top: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         .input-box { display: flex; flex-direction: column; }
         label { font-weight: 600; margin-bottom: 8px; font-size: 0.9rem; }
@@ -19,8 +20,9 @@
         .hidden { display: none; }
         button { width: 100%; padding: 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; transition: 0.3s; }
         button:hover { background: #003366; }
-        #output-area { margin-top: 30px; padding: 30px; background: #fffdf2; border: 1px solid var(--accent); border-radius: 10px; display: none; line-height: 1.7; }
+        #output-area { margin-top: 40px; padding: 35px; background: #fffdf2; border: 1px solid var(--accent); border-radius: 10px; display: none; line-height: 1.8; }
         .loading { text-align: center; display: none; padding: 20px; font-weight: bold; color: var(--primary); }
+        .academic-section { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 5px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -28,51 +30,51 @@
 <div class="container">
     <div class="header">
         <h1>GamAI Research Architect</h1>
-        <p>Customized for STEM Experimental & Social Science Research</p>
+        <p>Comprehensive Framework, Problem, and Statistical Mapping</p>
     </div>
 
     <div class="content">
-        <div class="section-title">I. Research Typology</div>
+        <div class="section-title">I. Study Typology</div>
         <div class="grid">
             <div class="input-box full">
-                <label>Type of Research</label>
+                <label>Research Type</label>
                 <select id="researchType" onchange="toggleSTEM()">
-                    <option value="Non-Experimental">Non-Experimental (Correlational/Descriptive)</option>
-                    <option value="Experimental">STEM Experimental (Product Development/Trials)</option>
+                    <option value="Non-Experimental">Non-Experimental (Social Science / Correlational)</option>
+                    <option value="Experimental">STEM Experimental (Product Development / Laboratory)</option>
                 </select>
             </div>
         </div>
 
-        <div class="section-title">II. Variable Encoding</div>
+        <div class="section-title">II. Variables & Sub-Variables</div>
         <div class="grid">
             <div class="input-box">
                 <label>Independent Variable (IV)</label>
-                <input type="text" id="iv" placeholder="Main cause/treatment">
+                <input type="text" id="iv" placeholder="e.g., Organic Fertilizer">
             </div>
             <div class="input-box">
                 <label>Dependent Variable (DV)</label>
-                <input type="text" id="dv" placeholder="Main outcome/effect">
+                <input type="text" id="dv" placeholder="e.g., Plant Growth Rate">
             </div>
             <div class="input-box">
-                <label>Sub-variables for IV (Optional)</label>
-                <input type="text" id="ivSub" placeholder="e.g., Accuracy, Efficiency (Comma separated)">
+                <label>IV Sub-variables (Indicators)</label>
+                <input type="text" id="ivSub" placeholder="e.g., Concentration, Application Frequency">
             </div>
             <div class="input-box">
-                <label>Sub-variables for DV (Optional)</label>
-                <input type="text" id="dvSub" placeholder="e.g., Speed, Durability (Comma separated)">
+                <label>DV Sub-variables (Indicators)</label>
+                <input type="text" id="dvSub" placeholder="e.g., Stem height, Leaf count">
             </div>
         </div>
 
         <div id="stemFields" class="hidden">
-            <div class="section-title">III. STEM Specifications</div>
+            <div class="section-title">III. STEM Trials</div>
             <div class="input-box full">
-                <label>Planned Trials/Evaluations</label>
-                <textarea id="stemTrials" placeholder="e.g., 3 concentrations, 24-hour observation, sensory evaluation..."></textarea>
+                <label>Proposed Trials/Evaluations</label>
+                <textarea id="stemTrials" placeholder="Describe your testing process (e.g., 3 replicates for each concentration, 14-day observation period)"></textarea>
             </div>
         </div>
 
         <button onclick="generateResearch()">Architect My Research</button>
-        <div id="loading" class="loading">⚙️ Constructing Research Framework...</div>
+        <div id="loading" class="loading">🧬 Drafting Framework & Research Design...</div>
 
         <div id="output-area">
             <div id="ai-response"></div>
@@ -87,7 +89,9 @@ function toggleSTEM() {
 }
 
 async function generateResearch() {
-    const apiKey = "AIzaSyAqaHd3PE1l8CiqVebkseBUCIiIM0u37j4"; // Replace with your new key
+    // PASTE YOUR NEW KEY HERE
+    const apiKey = "AIzaSyBZPX4Nhg6xK51mzHH_VsBx2ussMYROlMY"; 
+    
     const type = document.getElementById('researchType').value;
     const iv = document.getElementById('iv').value;
     const dv = document.getElementById('dv').value;
@@ -95,25 +99,28 @@ async function generateResearch() {
     const dvSub = document.getElementById('dvSub').value || "N/A";
     const stemTrials = document.getElementById('stemTrials').value;
 
-    if(!iv || !dv) { alert("Please fill in main variables."); return; }
+    if(!iv || !dv) { alert("Please input the main variables."); return; }
 
     document.getElementById('loading').style.display = "block";
     document.getElementById('output-area').style.display = "none";
 
-    let stemContext = (type === "Experimental") ? `This is a STEM Experimental study. Planned trials: ${stemTrials}` : "This is a Non-Experimental study.";
+    const prompt = `Act as an Academic Research Expert and statistician.
+    Study Type: ${type}. 
+    IV: ${iv} (Sub-variables: ${ivSub}). 
+    DV: ${dv} (Sub-variables: ${dvSub}).
+    STEM Trials (if any): ${stemTrials}.
 
-    const prompt = `Act as a Research Expert.
-    Context: ${stemContext}
-    Variables: IV: ${iv} (Sub: ${ivSub}), DV: ${dv} (Sub: ${dvSub}).
-    
-    TASK:
-    1. 3 Professional Titles.
-    2. STATEMENT OF THE PROBLEM: Format exactly as:
-       - A General Statement (Paragraph form).
-       - Specific Questions (Numbered list, include sub-variables if provided).
-    3. DESIGN: Suggest the best quantitative/experimental design.
-    4. EVALUATION (For STEM): Suggest specific tests/trials to be done.
-    5. STATISTICAL TOOLS: List which specific statistical test should be used for EACH research question (e.g., Q1: Mean; Q2: T-test, etc.).`;
+    Please generate:
+    1. THREE TITLES: (Scientific and professional).
+    2. THEORETICAL FRAMEWORK: Identify the specific theory or law that supports this study.
+    3. CONCEPTUAL FRAMEWORK: Describe the logic of the IV-DV relationship or IPO model.
+    4. STATEMENT OF THE PROBLEM: 
+       - Start with a formal "General Statement" paragraph.
+       - Provide numbered "Specific Questions" (SOP).
+    5. EVALUATION/TRIALS (For STEM): Specific technical steps for the experiment.
+    6. STATISTICAL TOOLS: Assign a specific statistical test for EACH specific question (e.g., SOP 1: Weighted Mean; SOP 4: ANOVA).
+
+    Format: Use <h3> for sections and <strong> for highlights. Use bullet points.`;
 
     try {
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
@@ -122,10 +129,15 @@ async function generateResearch() {
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
         const data = await response.json();
-        const text = data.candidates[0].content.parts[0].text;
-        document.getElementById('ai-response').innerHTML = text.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        const textResult = data.candidates[0].content.parts[0].text;
+        
+        document.getElementById('ai-response').innerHTML = textResult
+            .replace(/\n/g, "<br>")
+            .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+            .replace(/### (.*?)\n/g, "<h3>$1</h3>");
+            
     } catch (err) {
-        document.getElementById('ai-response').innerHTML = "Error connecting. Check API key.";
+        document.getElementById('ai-response').innerHTML = "Error: Please check your API key and connection.";
     } finally {
         document.getElementById('loading').style.display = "none";
         document.getElementById('output-area').style.display = "block";
