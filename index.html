@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GamAI v4.0 | Research Architect</title>
+    <title>GamAI v4.5 | Research Architect</title>
     <style>
         :root { --primary: #004a99; --accent: #fdb813; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); padding: 20px; color: #333; }
         .container { max-width: 1000px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid var(--primary); }
         .header { padding: 30px; text-align: center; border-bottom: 1px solid #eee; }
+        .header h1 { margin: 0; color: var(--primary); font-size: 2.2rem; }
         .content { padding: 40px; }
         .section-title { font-weight: bold; color: var(--primary); border-bottom: 2px solid var(--accent); display: inline-block; margin-bottom: 15px; text-transform: uppercase; margin-top: 20px; }
         .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
@@ -87,9 +88,9 @@ function toggleSTEM() {
 }
 
 async function generateResearch() {
-    // This popup keeps your key off GitHub so Google doesn't disable it
-    const apiKey = prompt("Please enter your Gemini API Key:");
-    if(!apiKey) { alert("API Key is required to connect to the AI."); return; }
+    // SECURE POPUP: Prevents key leakage on GitHub
+    const apiKey = prompt("Please enter your NEW Gemini API Key:");
+    if(!apiKey) { alert("API Key is required."); return; }
 
     const type = document.getElementById('researchType').value;
     const iv = document.getElementById('iv').value;
@@ -103,19 +104,27 @@ async function generateResearch() {
     document.getElementById('loading').style.display = "block";
     document.getElementById('output-area').style.display = "none";
 
-    const promptText = `Act as an Academic Research Expert. Research Type: ${type}. IV: ${iv} (${ivSub}), DV: ${dv} (${dvSub}). STEM Context: ${stemTrials}. 
-    Generate:
-    1. 3 Professional Titles.
-    2. Theoretical Framework (specific theories/laws).
-    3. Conceptual Framework (Explain the logic of the study).
-    4. Statement of the Problem: One formal General Statement paragraph, then Specific Numbered Questions.
-    5. STEM Evaluations/Trials (if experimental).
-    6. Statistical Tools: Map a specific test to EVERY numbered question.
-    Format with <h3> for headers and <strong> for highlights.`;
+    const promptText = `Act as an Academic Research Expert and Statistician.
+    Study Type: ${type}. 
+    IV: ${iv} (Sub-variables: ${ivSub}). 
+    DV: ${dv} (Sub-variables: ${dvSub}).
+    STEM Trials (if any): ${stemTrials}.
+
+    Please generate exactly in this order:
+    1. THREE PROFESSIONAL TITLES.
+    2. THEORETICAL FRAMEWORK: Identify the specific academic theory or scientific law supporting this study.
+    3. CONCEPTUAL FRAMEWORK: A paragraph explaining the flow of the study (Input-Process-Output or IV-DV logic).
+    4. STATEMENT OF THE PROBLEM: 
+       - Start with a formal "General Statement" paragraph (e.g. "This study determines...").
+       - Provide numbered "Specific Questions" (SOP) including sub-variables.
+    5. EVALUATION/TRIALS (For STEM): Specific technical tests/procedures to be done.
+    6. STATISTICAL TOOLS: Assign a specific statistical test for EVERY numbered research question.
+
+    Format: Use <h3> for sections and <strong> for highlights. Use bullet points.`;
 
     try {
-        // Updated 2026 Stable Endpoint
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        // v1beta endpoint with gemini-1.5-flash is currently the most compatible
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ contents: [{ parts: [{ text: promptText }] }] })
@@ -134,7 +143,8 @@ async function generateResearch() {
             .replace(/### (.*?)\n/g, "<h3>$1</h3>");
             
     } catch (err) {
-        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Connection Error:</b> " + err.message + "<br><br>Tip: Ensure you are using a BRAND NEW API key from Google AI Studio.";
+        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Connection Error:</b> " + err.message + 
+        "<br><br><b>Troubleshooting:</b> 1. Ensure you used a BRAND NEW key from Google AI Studio. 2. Your key must not be 'leaked'. 3. Check your internet connection.";
     } finally {
         document.getElementById('loading').style.display = "none";
         document.getElementById('output-area').style.display = "block";
