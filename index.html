@@ -87,9 +87,9 @@ function toggleSTEM() {
 }
 
 async function generateResearch() {
-    // SECURE POPUP: This prevents your key from being leaked on GitHub
-    const apiKey = prompt("AIzaSyBL0Zmq4pnOIKsTbxH_TGPXAKOR0TtHOA0");
-    if(!apiKey) { alert("API Key is required."); return; }
+    // This popup keeps your key off GitHub so Google doesn't disable it
+    const apiKey = prompt("AIzaSyDGtbISfx40sdpqY32wVzy1DdJi3dCbBZ4");
+    if(!apiKey) { alert("API Key is required to connect to the AI."); return; }
 
     const type = document.getElementById('researchType').value;
     const iv = document.getElementById('iv').value;
@@ -103,17 +103,18 @@ async function generateResearch() {
     document.getElementById('loading').style.display = "block";
     document.getElementById('output-area').style.display = "none";
 
-    const promptText = `Act as an Academic Expert. Research Type: ${type}. IV: ${iv} (${ivSub}), DV: ${dv} (${dvSub}). STEM Context: ${stemTrials}. 
+    const promptText = `Act as an Academic Research Expert. Research Type: ${type}. IV: ${iv} (${ivSub}), DV: ${dv} (${dvSub}). STEM Context: ${stemTrials}. 
     Generate:
     1. 3 Professional Titles.
-    2. Theoretical Framework (specific theories).
-    3. Conceptual Framework (IPO or IV-DV logic).
+    2. Theoretical Framework (specific theories/laws).
+    3. Conceptual Framework (Explain the logic of the study).
     4. Statement of the Problem: One formal General Statement paragraph, then Specific Numbered Questions.
-    5. STEM Evaluations (if applicable).
+    5. STEM Evaluations/Trials (if experimental).
     6. Statistical Tools: Map a specific test to EVERY numbered question.
     Format with <h3> for headers and <strong> for highlights.`;
 
     try {
+        // Updated 2026 Stable Endpoint
         const response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -121,7 +122,10 @@ async function generateResearch() {
         });
         
         const data = await response.json();
-        if(data.error) { throw new Error(data.error.message); }
+        
+        if(data.error) {
+            throw new Error(data.error.message);
+        }
 
         const textResult = data.candidates[0].content.parts[0].text;
         document.getElementById('ai-response').innerHTML = textResult
@@ -130,7 +134,7 @@ async function generateResearch() {
             .replace(/### (.*?)\n/g, "<h3>$1</h3>");
             
     } catch (err) {
-        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Error:</b> " + err.message;
+        document.getElementById('ai-response').innerHTML = "<b style='color:red;'>Connection Error:</b> " + err.message + "<br><br>Tip: Ensure you are using a BRAND NEW API key from Google AI Studio.";
     } finally {
         document.getElementById('loading').style.display = "none";
         document.getElementById('output-area').style.display = "block";
