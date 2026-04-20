@@ -88,7 +88,7 @@ function toggleSTEM() {
 
 async function generateResearch() {
     // This popup keeps your key off GitHub so Google doesn't disable it
-    const apiKey = prompt("AIzaSyDGtbISfx40sdpqY32wVzy1DdJi3dCbBZ4:");
+    const apiKey = prompt("Please enter your Gemini API Key:");
     if(!apiKey) { alert("API Key is required to connect to the AI."); return; }
 
     const type = document.getElementById('researchType').value;
