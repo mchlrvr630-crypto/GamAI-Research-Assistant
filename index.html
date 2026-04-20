@@ -2,96 +2,94 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>GamAI | Statistical Assistant</title>
+    <title>GamAI v2.0 | Research Architect</title>
     <style>
-        :root { --deped-blue: #004a99; --deped-yellow: #fdb813; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-        .header-bar { background: var(--deped-blue); height: 10px; width: 100%; position: fixed; top: 0; left: 0; }
-        .container { max-width: 900px; margin: 40px auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
-        .form-header { padding: 20px; border-bottom: 1px solid #eee; }
-        .form-header h2 { margin: 0; color: #333; font-size: 1.5rem; }
-        .form-body { padding: 30px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .input-box { display: flex; flex-direction: column; }
-        label { font-weight: 600; margin-bottom: 8px; color: #555; font-size: 0.9rem; }
-        input, textarea, select { padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1rem; }
-        textarea { height: 80px; resize: none; }
-        .full-width { grid-column: span 2; }
-        button { background: var(--deped-blue); color: white; border: none; padding: 15px 30px; border-radius: 4px; cursor: pointer; font-weight: bold; float: right; margin-top: 10px; }
-        button:hover { background: #003366; }
-        #guide-output { margin-top: 80px; padding: 20px; background: #fff9e6; border: 1px solid var(--deped-yellow); border-radius: 8px; display: none; clear: both; }
+        :root { --primary: #1a237e; --accent: #ffd600; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f9; padding: 20px; }
+        .app-card { max-width: 800px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; }
+        .header { background: var(--primary); color: white; padding: 20px; text-align: center; }
+        .content { padding: 30px; }
+        .input-group { margin-bottom: 20px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
+        input[type="text"] { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 1rem; }
+        button:hover { background: #0d1642; border: 1px solid var(--accent); }
+        #output { margin-top: 30px; padding: 20px; border-left: 5px solid var(--accent); background: #fffde7; display: none; line-height: 1.6; }
+        .tool-tag { background: #e8eaf6; padding: 2px 8px; border-radius: 4px; font-weight: bold; color: var(--primary); }
     </style>
 </head>
 <body>
 
-<div class="header-bar"></div>
-<div class="container">
-    <div class="form-header">
-        <h2>I. Core Research Data</h2>
+<div class="app-card">
+    <div class="header">
+        <h1>GamAI: Research Architect</h1>
+        <p>Conceptualize your study in seconds</p>
     </div>
-    <div class="form-body">
-        <div class="grid">
-            <div class="input-box">
-                <label>1. Research Area / Subject</label>
-                <input type="text" id="subject" placeholder="e.g., Mathematics">
-            </div>
-            <div class="input-box">
-                <label>2. Target Population</label>
-                <input type="text" id="population" placeholder="e.g., Grade 6 Students">
-            </div>
-            <div class="input-box">
-                <label>3. Type of Analysis</label>
-                <select id="analysisType">
-                    <option value="Comparative">Comparative (Differences)</option>
-                    <option value="Correlational">Correlational (Relationships)</option>
-                    <option value="Descriptive">Descriptive (Means/Frequencies)</option>
-                </select>
-            </div>
-            <div class="input-box">
-                <label>4. Date</label>
-                <input type="date" id="date">
-            </div>
-            <div class="input-box full-width">
-                <label>5. Research Question (Content Standard)</label>
-                <textarea id="rq" placeholder="What is the significant difference between..."></textarea>
-            </div>
+    
+    <div class="content">
+        <div class="input-group">
+            <label>Independent Variable (IV) - The Cause</label>
+            <input type="text" id="iv" placeholder="e.g., Use of Gamified Apps">
         </div>
-        <button onclick="generateGuide()">Generate Interpretation Guide</button>
 
-        <div id="guide-output">
-            <h3 style="color:var(--deped-blue); margin-top:0;">📊 GamAI Interpretation Guide</h3>
+        <div class="input-group">
+            <label>Dependent Variable (DV) - The Effect</label>
+            <input type="text" id="dv" placeholder="e.g., Academic Performance in Math">
+        </div>
+
+        <button onclick="generateResearch()">Architect My Research</button>
+
+        <div id="output">
             <div id="ai-response"></div>
         </div>
     </div>
 </div>
 
 <script>
-async function generateGuide() {
-    const apiKey = "AIzaSyA0qQtrAFgfLtkcxIbcdyftzDpnFsCs_Jk"; // Put your Gemini API Key here
-    const subject = document.getElementById('subject').value;
-    const rq = document.getElementById('rq').value;
-    const responseDiv = document.getElementById('ai-response');
-    const outputBox = document.getElementById('guide-output');
+async function generateResearch() {
+    const iv = document.getElementById('iv').value;
+    const dv = document.getElementById('dv').value;
+    const outputDiv = document.getElementById('output');
+    const responseText = document.getElementById('ai-response');
+    
+    // PASTE YOUR API KEY HERE
+    const apiKey = "AIzaSyA0qQtrAFgfLtkcxIbcdyftzDpnFsCs_Jk"; 
 
-    outputBox.style.display = "block";
-    responseDiv.innerHTML = "<em>GamAI is generating your custom guide...</em>";
+    if(!iv || !dv) { alert("Please fill in both IV and DV"); return; }
 
-    const prompt = `Research Context: ${subject}. Research Question: ${rq}. 
-    Task: Do not provide an interpretation. Instead, give a step-by-step guide on how the researcher should interpret their data properly. 
-    Focus on: 1. How to analyze Highest/Lowest values. 2. How to explain scores simply. 3. What specific implications to look for. 4. Suggest a supporting citation.`;
+    outputDiv.style.display = "block";
+    responseText.innerHTML = "<em>GamAI is brainstorming your research design...</em>";
+
+    const prompt = `Act as a Senior Research Consultant. 
+    Independent Variable (IV): ${iv}
+    Dependent Variable (DV): ${dv}
+    
+    Based on these variables, provide:
+    1. THREE SUGGESTED TITLES: (From descriptive to experimental).
+    2. THE RESEARCH QUESTION: Formulate the primary Statement of the Problem.
+    3. RESEARCH DESIGN: Suggest the most appropriate quantitative design.
+    4. STATISTICAL TOOL: Name the specific test and why.
+    
+    Format the output with bold headers and clear bullet points.`;
 
     try {
-        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
+        
         const data = await response.json();
-        responseDiv.innerText = data.candidates[0].content.parts[0].text;
+        const result = data.candidates[0].content.parts[0].text;
+        
+        // Convert Markdown-style bolding to HTML
+        responseText.innerHTML = result.replace(/\n/g, "<br>").replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+        
     } catch (error) {
-        responseDiv.innerText = "Error connecting to Gemini. Please check your API key.";
+        responseText.innerHTML = "<span style='color:red;'>Error connecting to GamAI Engine. Please verify your API Key and Model Name.</span>";
     }
 }
 </script>
+
 </body>
 </html>
